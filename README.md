@@ -1,9 +1,9 @@
 # Xamarin.Forms.Mocks
 Library for running Xamarin.Forms inside of unit tests
 
-| Windows / AppVeyor | OS X / Travis-CI |
-|---------------------------|-----------------------------|
-| ![AppVeyor](https://ci.appveyor.com/api/projects/status/github/jonathanpeppers/Xamarin.Forms.Mocks) | ![Travis CI](https://travis-ci.org/jonathanpeppers/Xamarin.Forms.Mocks.svg?branch=master) |
+| NuGet | Windows / AppVeyor | OS X / Travis-CI |
+|---------------------------|---------------------------|-----------------------------|
+| [![NuGet](https://img.shields.io/nuget/dt/Xamarin.Forms.Mocks.svg)](https://www.nuget.org/packages/Xamarin.Forms.Mocks) | [![AppVeyor](https://ci.appveyor.com/api/projects/status/github/jonathanpeppers/Xamarin.Forms.Mocks)](https://ci.appveyor.com/project/jonathanpeppers/xamarin-forms-mocks) | [![Travis CI](https://travis-ci.org/jonathanpeppers/Xamarin.Forms.Mocks.svg?branch=master)](https://travis-ci.org/jonathanpeppers/Xamarin.Forms.Mocks) |
 
 If you've ever written any complicated logic inside a Xamarin.Forms View, you quickly realize that this code can't be unit tested easily. Your colleagues will tell you to MVVM all the things, but you cannot get around interacting with Xamarin.Forms itself. Things like navigation, animations, custom markup extensions, etc. can become an untested mess.
 
@@ -107,6 +107,24 @@ public void OpenUri()
 }
 ```
 
+To test things using `Application.Current` or its resources:
+```csharp
+[SetUp]
+public void SetUp()
+{
+    MockForms.Init();
+
+    //This is your App.xaml and App.xaml.cs, which can have resources, etc.
+    Application.Current = new App();
+}
+
+[TearDown]
+public void TearDown()
+{
+    Application.Current = null;
+}
+```
+
 # How does it work?
 
 The main issue with trying to call `Xamarin.Forms.Init()` yourself for unit testing is that all kinds of interfaces and classes are marked `internal`. I get around this by conforming to `[assembly: InternalsVisibleTo]` which is declared for the purposes of unit testing Xamarin.Forms itself.
@@ -129,6 +147,7 @@ Make sure to choose the appropriate version of this package for the version of X
 
 | Xamarin.Forms  | Xamarin.Forms.Mocks |
 | ------------- | ------------- |
+| 2.4.0.x | 2.4.0.x |
 | 2.3.5.x-pre | 2.3.5.x-pre6 |
 | 2.3.4.x  | 2.3.4.x  |
 | 2.3.3.x  | 2.3.3.1  |
